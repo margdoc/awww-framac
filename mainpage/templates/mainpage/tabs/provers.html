@@ -1,0 +1,12 @@
+<ul class="provers-list">
+{% for prover in provers %}
+    <li class="prover-item">
+        <button
+            class="page-button prover"
+            onclick="set_prover('{{ prover }}')"
+        >
+            {{ prover }}
+        </button>
+    </li>
+{% endfor %}
+</ul>

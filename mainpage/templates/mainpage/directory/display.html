@@ -1,0 +1,25 @@
+{% load static %}
+
+<li
+        class="directory"
+        id="directory-{{ directory.pk }}"
+>
+    <img
+            class="directory-image"
+            src="{% static 'mainpage/folder_icon.png' %}"
+            alt=""
+    />
+    <button
+        onclick="switch_directory('#directory-{{ directory.pk }}')"
+    >{{ directory.name }}</button>
+    <ul class="directory-content">
+        {% for subdirectory in directory.subdirectories %}
+            {% with directory=subdirectory template_name="mainpage/directory/display.html" %}
+                {% include template_name %}
+            {% endwith %}
+        {% endfor %}
+        {% for file in directory.files %}
+            {% include "mainpage/file/display.html" %}
+        {% endfor %}
+    </ul>
+</li>

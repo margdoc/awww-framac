@@ -1,0 +1,356 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frama C</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'mainpage/style.css' %}?{% now "U" %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="{% static 'mainpage/codemirror.css' %}">
+    <link rel="stylesheet" href="{% static 'mainpage/darcula.css' %}">
+    <link rel="stylesheet" href="{% static 'mainpage/addon/scroll/simplescrollbars.css' %}">
+    <script src="{% static 'mainpage/codemirror.js' %}"></script>
+    <script src="{% static 'mainpage/clike/clike.js' %}"></script>
+    <script src="{% static 'mainpage/addon/mode/keyword.js' %}"></script>
+    <script src="{% static 'mainpage/addon/scroll/simplescrollbars.js' %}"></script>
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.mjs"
+    ></script>
+    <script type="text/ecmascript">
+        const toggleSection = (section_id) => {
+            const section = $( section_id );
+
+            if (section.hasClass("hidden")) {
+                section.removeClass("hidden");
+            } else {
+                section.addClass("hidden");
+            }
+        };
+
+        const file_load = (file_pk) => {
+            const link = `${"{% url 'file-get' 0 %}".replace('0', file_pk)}`;
+            const xmlHttp = new XMLHttpRequest();
+
+            xmlHttp.onreadystatechange = () => {
+                if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+                    const data = JSON.parse(xmlHttp.responseText);
+
+                    editor.getDoc().setValue(data["code"]);
+                    {#$( "#program-code" ).html(data["code"]);#}
+                    $( "#program-elements" ).html(data["program_elements"].map(
+                        ([code, type, section], id) => `
+                            <div class="tooltip" onclick="toggleSection('#section-status-${id}')">
+                                <div class="tooltiptext">${section}</div>
+                                <div class="section-status-${type}">
+                                    <pre><code>${code.split("\n")[0]}</code></pre>
+                                    <pre id="section-status-${id}"><code>${code.split("\n").slice(1).join('\n')}</code></pre>
+                                </div>
+                            </div>
+                        `
+                    ).join(""));
+                    $( "#program-result" ).html(data["result"]);
+                }
+            }
+
+            xmlHttp.open("GET", link);
+            xmlHttp.send();
+
+            set_menu_tab("view-file");
+
+            const rerun_button = $( "#rerun-button" );
+            rerun_button.removeClass("hidden");
+            rerun_button.attr('onclick', `file_rerun(${file_pk})`);
+            const upload_button = $( "#upload-button" );
+            upload_button.removeClass("hidden");
+            upload_button.attr('onclick', `file_upload(${file_pk})`);
+        };
+
+        const file_rerun = (file_pk) => {
+            const link = `${"{% url 'file-rerun' 0 %}".replace('0', file_pk)}`;
+            const xmlHttp = new XMLHttpRequest();
+
+            xmlHttp.onreadystatechange = () => {
+                if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+                    const data = JSON.parse(xmlHttp.responseText);
+
+                    $( "#program-result" ).html(data["result"]);
+                }
+            }
+
+            xmlHttp.open("GET", link);
+            xmlHttp.send();
+        };
+
+        const file_upload = (file_pk) => {
+            const link = `${"{% url 'file-change' 0 %}".replace('0', file_pk)}`;
+            const xmlHttp = new XMLHttpRequest();
+
+            xmlHttp.onreadystatechange = () => {
+                if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+                    const data = JSON.parse(xmlHttp.responseText);
+
+                    editor.getDoc().setValue(data["code"]);
+                    {#$( "#program-code" ).html(data["code"]);#}
+                    $( "#program-elements" ).html(data["program_elements"].map(
+                        ([code, type, section], id) => `
+                            <div class="tooltip" onclick="toggleSection('#section-status-${id}')">
+                                <div class="tooltiptext">${section}</div>
+                                <div class="section-status-${type}">
+                                    <pre><code>${code.split("\n")[0]}</code></pre>
+                                    <pre id="section-status-${id}"><code>${code.split("\n").slice(1).join('\n')}</code></pre>
+                                </div>
+                            </div>
+                        `
+                    ).join(""));
+                    $( "#program-result" ).html(data["result"]);
+                }
+            }
+
+            xmlHttp.open("POST", link);
+            xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xmlHttp.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            xmlHttp.send(`file=${encodeURIComponent(editor.getDoc().getValue())}`);
+        };
+
+        const set_prover = (prover) => {
+            document.cookie = `prover=${prover}`;
+        };
+
+        const set_tab = (tab_name) => {
+            const tab_to_show = $( `#tab-${tab_name}` );
+
+            $( "div[id^='tab']" ).each((i, tab) => {
+                const tab_to_hide = $(tab);
+
+                if (!tab_to_hide.is(tab_to_show)) {
+                    tab_to_hide.addClass("hidden");
+                }
+            });
+
+            tab_to_show.removeClass("hidden");
+        };
+
+        const switch_directory = (directory) => {
+            const dir = $(directory);
+
+            if (dir.hasClass("hidden")) {
+                dir.removeClass("hidden");
+            } else {
+                dir.addClass("hidden");
+            }
+        };
+
+        const set_menu_tab = (tab_name) => {
+            const tab_to_show = $( `#menu-tab-${tab_name}` );
+
+            $( "div[id^='menu-tab']" ).each((i, tab) => {
+                const tab_to_hide = $(tab);
+
+                if (!tab_to_hide.is(tab_to_show)) {
+                    tab_to_hide.addClass("hidden");
+                }
+            });
+
+            tab_to_show.removeClass("hidden");
+            $( "#rerun-button" ).addClass("hidden");
+            $( "#upload-button" ).addClass("hidden");
+        };
+    </script>
+</head>
+<body class="blue-theme">
+<div class="main vertical-flex">
+    <div class="menu-bar">
+        {% if request.user.is_authenticated %}
+            <span>{{ request.user.username }}</span>
+            <a
+                    role="button"
+                    class="page-button"
+                    href="{% url 'logout' %}"
+            >
+                Logout
+            </a>
+            {% if request.user.is_staff %}
+                <a
+                        role="button"
+                        class="page-button"
+                        href="{% url 'create_user' %}"
+                >
+                    Create User
+                </a>
+            {% endif %}
+        {% else %}
+            <a
+                    role="button"
+                    class="page-button"
+                    href="{% url 'login' %}"
+            >
+                Login
+            </a>
+        {% endif %}
+        <button
+                class="page-button"
+                onclick="set_menu_tab('home')"
+        >
+            Home
+        </button>
+        <button
+                class="page-button"
+                onclick="set_menu_tab('add-file')"
+        >
+            Add File
+        </button>
+        <button
+                class="page-button"
+                onclick="set_menu_tab('delete-file')"
+        >
+            Delete File
+        </button>
+        <button
+                class="page-button"
+                onclick="set_menu_tab('add-directory')"
+        >
+            Add Directory
+        </button>
+        <button
+                class="page-button"
+                onclick="set_menu_tab('delete-directory')"
+        >
+            Delete Directory
+        </button>
+        <button
+                id="rerun-button"
+                class="page-button hidden"
+                onclick=""
+        >
+            Rerun
+        </button>
+        <button
+                id="upload-button"
+                class="page-button hidden"
+                onclick=""
+        >
+            Upload
+        </button>
+    </div>
+    <div class="inside horizontal-flex">
+        <div class="file-selection vertical-flex">
+            <ul class="directory-content">
+                {% if directories %}
+                    {% for directory in directories %}
+                        {% include "mainpage/directory/display.html" %}
+                    {% endfor %}
+                {% endif %}
+                {% if files %}
+                    {% for file in files %}
+                        {% include "mainpage/file/display.html" %}
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+        <div class="code-and-tabs vertical-flex">
+            <div id="menu-tab-home">
+                Select file from left panel or add new from menu bar!
+            </div>
+            <div id="menu-tab-add-file" class="hidden">
+                {% include "mainpage/file/add.html" %}
+            </div>
+            <div id="menu-tab-delete-file" class="hidden">
+                {% include "mainpage/file/delete.html" %}
+            </div>
+            <div id="menu-tab-add-directory" class="hidden">
+                {% include "mainpage/directory/add.html" %}
+            </div>
+            <div id="menu-tab-delete-directory" class="hidden">
+                {% include "mainpage/directory/delete.html" %}
+            </div>
+            <div id="menu-tab-view-file" class="hidden vertical-flex">
+                <div class="code-and-elements horizontal-flex">
+                    <div class="program-code">
+                        <textarea id="code-editor">{{ code }}</textarea>
+                    </div>
+                    <script type="text/ecmascript">
+                        const editor = CodeMirror.fromTextArea(document.getElementById("code-editor"), {
+                            lineNumbers: true,
+                            styleActiveLine: true,
+                            scrollbarStyle: "overlay",
+                            mode: "text/x-csrc",
+                            theme: "darcula",
+                            matchBrackets: true,
+                            keyword: {
+                                "requires": "section",
+                                "ensures": "section",
+                                "assert": "section",
+                                "loop invariant": "section",
+                                "loop variant": "section",
+                                "lemma": "section",
+                                "assumes": "special",
+                                "axiomatic": "special",
+                                "predicate": "special",
+                                "behavior success": "special",
+                                "behavior failure": "special",
+                            }
+                        });
+
+                        editor.setSize("100%", "100%");
+                    </script>
+
+                    <div id="program-elements" class="program-elements">
+                        {% for data, type, section in program_elements %}
+                            <div class="tooltip">
+                                <div class="tooltiptext">{{ section }}</div>
+                                <pre class="section-status-{{ type }}"><code>{{ data }}</code></pre>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="tabs">
+                    <div class="tabs-selector">
+                        <button
+                                class="page-button"
+                                onclick="set_tab('provers')"
+                        >
+                            PROVERS
+                        </button>
+                        <button
+                                class="page-button"
+                                onclick="set_tab('vcs')"
+                        >
+                            VCs
+                        </button>
+                        <button
+                                class="page-button"
+                                onclick="set_tab('result')"
+                        >
+                            RESULT
+                        </button>
+                    </div>
+                    <div class="tab-info">
+                        <div
+                                {% if tab != "vcs" %}class="hidden"{% endif %}
+                                id="tab-vcs"
+                        >
+                            {% include "mainpage/tabs/vcs.html" %}
+                        </div>
+                        <div
+                                {% if tab != "result" %}class="hidden"{% endif %}
+                                id="tab-result"
+                        >
+                            {% include "mainpage/tabs/result.html" %}
+                        </div>
+                        <div
+                                {% if tab != "provers" %}class="hidden"{% endif %}
+                                id="tab-provers"
+                        >
+                            {% include "mainpage/tabs/provers.html" %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

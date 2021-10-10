@@ -1,0 +1,7 @@
+{% if vcs_form %}
+    <form method="POST">
+        {% csrf_token %}
+        {{ vcs_form.as_p }}
+        <button type="submit" class="save btn btn-default page-button">Save</button>
+    </form>
+{% endif %}

@@ -1,0 +1,43 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+    background: #87CEFA;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    background: #afeeee;
+    padding: 20px;
+    border-radius: 25px;
+}
+
+form > div.error {
+    margin-bottom: 5px;
+    color: red;
+}
+
+form > div.field {
+    margin-bottom: 5px;
+}
+
+form > div.tag {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+form > button {
+    margin-top: 25px;
+    padding: 5px 0;
+    background: #82a7c7;
+    border-radius: 5px;
+    border: none;
+    color: white;
+}
+
+form > button:hover {
+    cursor: pointer;
+    background: #5f84a3;
+}

@@ -1,0 +1,5 @@
+<form method="POST" action="{% url 'directory-add' %}">
+    {% csrf_token %}
+    {{ directory_add_form.as_p }}
+    <button type="submit" class="save btn btn-default page-button">Add Directory</button>
+</form>

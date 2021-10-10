@@ -1,0 +1,5 @@
+<form method="POST" enctype="multipart/form-data" action="{% url 'file-add' %}">
+    {% csrf_token %}
+    {{ file_add_form.as_p }}
+    <button type="submit" class="save btn btn-default page-button">Add File</button>
+</form>

@@ -1,0 +1,5 @@
+<form method="POST" action="{% url 'directory-delete' %}">
+    {% csrf_token %}
+    {{ directory_delete_form.as_p }}
+    <button type="submit" class="save btn btn-default page-button">Delete Directory</button>
+</form>

@@ -1,0 +1,298 @@
+/*
+ * Code linted with http://csslint.net.
+ * All warnings are about varaibles.
+ */
+
+body.blue-theme {
+    --buttons-color: #1E90FF;
+    --buttons-hover-color: #00BFFF;
+    --text-color: black;
+    --code-background: #afeeee;
+    --menu-bar-background: #ADD8E6;
+    --tabs-background: #00CED1;
+    --file-selection-background: #87CEFA;
+    --program-elements-background: #5F9EA0;
+    --file-hover-color: #008080;
+    --buttons-active-color: #67bad5;
+}
+
+body.red-theme {
+    --buttons-color: #CD5C5C;
+    --buttons-hover-color: #B22222;
+    --text-color: black;
+    --code-background: #ffb6c1;
+    --menu-bar-background: #F08080;
+    --tabs-background: #DB7093;
+    --file-selection-background: #FA8072;
+    --program-elements-background: #FF6347;
+    --file-hover-color: #800000;
+    --buttons-active-color: #801313;
+}
+
+body.rainbow-theme {
+    --buttons-color: transparent;
+    --buttons-hover-color: transparent;
+    --text-color: black;
+    --code-background: transparent;
+    --menu-bar-background: transparent;
+    --tabs-background: transparent;
+    --file-selection-background: transparent;
+    --program-elements-background: transparent;
+    --file-hover-color: black;
+    background: linear-gradient(to bottom right, red, orange, #ffff00, green, cyan, blue, violet);
+}
+
+body.rainbow-theme .page-button,
+body.rainbow-theme .file-selection a {
+    transition: transform .2s;
+}
+
+body.rainbow-theme .page-button:hover,
+body.rainbow-theme .file-selection a:hover {
+    transform: scale(1.1);
+}
+
+body {
+    min-height: 100vh;
+    max-height: 100vh;
+    margin: 0;
+    /*overflow-x: hidden;*/
+    /*overflow-y: hidden;*/
+}
+
+.main {
+    min-height: 100vh;
+    max-height: 100vh;
+    height: 100%;
+    align-content: stretch;
+    flex-wrap: wrap;
+}
+
+.vertical-flex,
+.horizontal-flex {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+}
+
+.vertical-flex {
+    flex-direction: column;
+}
+
+.horizontal-flex {
+    flex-direction: row;
+}
+
+.menu-bar,
+.file-selection,
+.program-elements,
+.program-code,
+.tabs {
+    color: var(--text-color);
+}
+
+.menu-bar {
+    padding: 10px 5px;
+    background: var(--menu-bar-background);
+}
+
+.inside {
+    min-height: 500px;
+    flex: 10;
+}
+
+.file-selection {
+    flex: 3 2 auto;
+    padding: 5px;
+    width: 20vw;
+    justify-content: flex-start;
+    background: var(--file-selection-background);
+}
+
+.code-and-tabs {
+    flex: 10 10 auto;
+    background: var(--code-background);
+    min-height: 0;
+    width: 80vw;
+}
+
+#menu-tab-view-file {
+    min-height: 0;
+    height: 100%;
+}
+
+.code-and-elements {
+    flex: 3 3 auto;
+    min-height: 0;
+    height: 65vh;
+}
+
+.program-code {
+    flex: 3 1 auto;
+    width: 50vw;
+    background: var(--code-background);
+    overflow-y: auto;
+}
+
+.program-code .CodeMirror {
+    height: 100%;
+}
+
+.program-elements {
+    flex: 2 2 auto;
+    min-height: 0;
+    min-width: 0;
+    width: 30vw;
+    overflow-x: auto;
+    overflow-y: auto;
+    padding: 5px;
+    background: var(--program-elements-background);
+}
+
+.program-elements pre {
+    padding: 5px;
+    margin: 5px 5px 30px;
+    white-space: pre-wrap;
+}
+
+.program-elements .section-status-Unchecked {
+    background: yellow;
+}
+
+.program-elements .section-status-Proved {
+    background: green;
+}
+
+.program-elements .section-status-Invalid {
+    background: #b45f5f;
+}
+
+.tabs {
+    flex: 1 auto;
+    background: var(--tabs-background);
+    height: 30vh;
+    overflow-y: auto;
+}
+
+.tabs .tab-info {
+    padding: 8px;
+}
+
+.tabs .tabs-selector {
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.file-selection .directory-content {
+    padding: 0 15px;
+    list-style-type: none;
+}
+
+.file-selection .hidden .directory-content {
+    display: none;
+}
+
+.provers-list {
+    list-style-type: none;
+}
+
+.prover-item {
+    margin: 20px 0;
+}
+
+.code-result {
+    overflow-y: auto;
+}
+
+.file-selection button {
+    border: none;
+    background-color: inherit;
+    cursor: pointer;
+}
+
+.file-selection button:hover {
+    background: rgba(238, 238, 238, 0.93);
+}
+
+.file-selection .directory-content > li {
+    margin-top: 10px;
+}
+
+.file-selection .directory-image {
+    max-width: 1rem;
+}
+
+.page-button {
+    font-family: Noto Sans, serif;
+    color: black;
+    font-size: 15px;
+    margin: 0 2px;
+    padding: 5px;
+    text-align: center;
+    background: var(--buttons-color);
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.menu-bar .page-button {
+    font-size: 20px;
+}
+
+.menu-bar > .hidden,
+.code-and-tabs > .hidden,
+.tab-info > .hidden,
+.tooltip .hidden {
+    display: none;
+}
+
+.page-button:hover {
+    background: var(--buttons-hover-color);
+}
+
+.page-button:active {
+    background: var(--buttons-active-color);
+}
+
+.tooltip {
+    position: relative;
+    display: block;
+}
+
+.tooltip:hover {
+    cursor: pointer;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 7px 10px;
+    border-radius: 6px;
+
+    position: absolute;
+    z-index: 10;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+@media (max-width: 700px) {
+    .horizontal-flex {
+        flex-direction: column;
+    }
+
+    .program-code {
+        min-height: 50vh;
+    }
+}

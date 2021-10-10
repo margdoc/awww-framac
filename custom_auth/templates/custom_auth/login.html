@@ -1,0 +1,24 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{% static 'custom_auth/style.css' %}?{% now "U" %}">
+    <title>Frama C</title>
+</head>
+<body class="blue-theme">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="tag">{{ field.label_tag }}</div>
+            <div class="field">{{ field }}</div>
+            {% for error in field.errors %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+        {% endfor %}
+        <button type="submit" class="save btn btn-default">Login</button>
+    </form>
+</body>
+</html>

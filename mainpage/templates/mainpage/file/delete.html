@@ -1,0 +1,5 @@
+<form method="POST" action="{% url 'file-delete' %}">
+    {% csrf_token %}
+    {{ file_delete_form.as_p }}
+    <button type="submit" class="save btn btn-default page-button">Delete File</button>
+</form>
